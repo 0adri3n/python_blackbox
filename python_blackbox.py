@@ -32,8 +32,6 @@ import socket
 import ssl
 import urllib.request
 import http.client
-import sys
-import types
 
 # Optional: detect requests and patch if available
 try:
