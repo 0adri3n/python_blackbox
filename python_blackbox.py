@@ -45,6 +45,16 @@ except Exception:
 _ORIG = {}
 _BLOCKED = False
 _WHITELIST = set()
+_DEBUG = os.environ.get("PYTHON_BLACKBOX_DEBUG", "") in ("1", "true", "True")
+
+def set_debug(enabled: bool):
+    """Enable or disable debug logging for python_blackbox."""
+    global _DEBUG
+    _DEBUG = bool(enabled)
+
+def _log(msg: str):
+    if _DEBUG:
+        print(f"[python_blackbox DEBUG] {msg}")
 
 # Helper: check if a host is allowed (simple domain/IP match)
 def _host_allowed(host):
@@ -56,13 +66,13 @@ def _host_allowed(host):
     host = host.lower()  # <-- Ajouté
     for w in _WHITELIST:
         if host == w or host.endswith("." + w):
-            print(f"[python_blackbox: Allowing access to whitelisted host {host}]")
+            _log(f"Allowing access to whitelisted host {host}")
             return True
     # always allow localhost/loopback
     if host in ("localhost", "127.0.0.1", "::1"):
-        print(f"[python_blackbox: Allowing access to localhost {host}]")
+        _log(f"Allowing access to localhost {host}")
         return True
-    print(f"[python_blackbox: Blocking host {host}]")  # <-- Ajouté pour debug
+    _log(f"Blocking host {host}")  
     return False
 
 
@@ -177,6 +187,7 @@ def is_blocked():
 @contextmanager
 def allow_temporary():
     """Context manager that temporarily allows network access inside the with-block."""
+    _log("Entering allow_temporary context")
     was_blocked = is_blocked()
     if was_blocked:
         allow_network()
@@ -190,10 +201,12 @@ def allow_temporary():
 def add_whitelist(host_or_domain):
     """Add a host or domain to the whitelist (e.g. 'example.com' or 'api.example.com')."""
     _WHITELIST.add(host_or_domain)
+    _log("Host/domain added to whitelist: " + host_or_domain)
 
 
 def remove_whitelist(host_or_domain):
     _WHITELIST.discard(host_or_domain)
+    _log("Host/domain removed from whitelist: " + host_or_domain)
 
 
 # Auto-block on import unless disabled via environment variable
@@ -203,7 +216,8 @@ if os.environ.get("PYTHON_BLACKBOX_NOAUTO", "") in ("1", "true", "True"):
 else:
     try:
         block_network()
-        print("[python_blackbox: Network access blocked on import.]")
+        _log("Network access blocked on import.")
     except Exception:
         # fail gracefully if patching fails
         pass
+

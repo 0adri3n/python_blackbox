@@ -1,5 +1,7 @@
 import python_blackbox, requests
 
+python_blackbox.set_debug(True)  # enable debug loggings
+
 python_blackbox.add_whitelist("httpbin.org")
 
 try:

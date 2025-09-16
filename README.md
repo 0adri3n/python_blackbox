@@ -15,6 +15,19 @@
 
 Install by copying `python_blackbox.py` into your project, or add it as a submodule to your repository.
 
+You can install `python_blackbox` directly from this GitHub repository using `pip`:
+
+```bash
+pip install git+https://github.com/0adri3n/python_blackbox.git
+```
+
+Optionally, you can install a specific branch or tag:
+
+```bash
+pip install git+https://github.com/0adri3n/python_blackbox.git@test_branch
+pip install git+https://github.com/0adri3n/python_blackbox.git@v0.1.0
+```
+
 ### Default (auto-block on import)
 
 ```python
@@ -56,6 +69,35 @@ import python_blackbox
 python_blackbox.add_whitelist('api.mycompany.internal')
 ```
 
+### Debug Logging
+
+You can enable verbose debug logging to see more informations.
+
+### Enable via environment variable
+
+```bash
+export PYTHON_BLACKBOX_DEBUG=1
+python your_script.py
+```
+
+### Enable via code
+
+```python
+import python_blackbox
+python_blackbox.set_debug(True)
+
+python_blackbox.add_whitelist("example.com")
+python_blackbox.block_network()
+```
+
+Logs will look like this:
+
+```
+[python_blackbox DEBUG] Host/domain added to whitelist: httpbin.org
+[python_blackbox DEBUG] Blocking host httpbin.org
+```
+
+
 ## API
 
 * `block_network()` — apply Python-level network blocking.
@@ -64,6 +106,7 @@ python_blackbox.add_whitelist('api.mycompany.internal')
 * `allow_temporary()` — context manager to allow network inside a `with` block.
 * `add_whitelist(host_or_domain)` — allow a specific host or domain.
 * `remove_whitelist(host_or_domain)` — remove from whitelist.
+* `set_debug(boolean)` — activate/deactivate debug
 
 ## Limitations & Security Notes
 
