@@ -26,7 +26,7 @@ with python_blackbox.allow_temporary():
 python_blackbox.allow_network()
 
 try:
-    r = requests.get("https://httpbin.org/get")  # should fail
+    r = requests.get("https://httpbin.org/get")  # should succeed
     print("OK after network allowed:", r.status_code)
 except python_blackbox.NetworkBlockedError as e:
     print("Blocked:", e)
