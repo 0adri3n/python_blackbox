@@ -53,13 +53,16 @@ def _host_allowed(host):
     # remove port if present
     if ":" in host:
         host = host.split(":", 1)[0]
+    host = host.lower()  # <-- Ajouté
     for w in _WHITELIST:
         if host == w or host.endswith("." + w):
             print(f"[python_blackbox: Allowing access to whitelisted host {host}]")
             return True
     # always allow localhost/loopback
     if host in ("localhost", "127.0.0.1", "::1"):
+        print(f"[python_blackbox: Allowing access to localhost {host}]")
         return True
+    print(f"[python_blackbox: Blocking host {host}]")  # <-- Ajouté pour debug
     return False
 
 
@@ -128,9 +131,6 @@ def block_network():
     _ORIG['urllib.request.urlopen'] = urllib.request.urlopen
     _ORIG['http.client.HTTPConnection.connect'] = http.client.HTTPConnection.connect
 
-    # Patch socket.socket to raise when instantiated
-    socket.socket = lambda *a, **k: (_ORIG['socket.socket'](*a, **k) if False else (_BlockedSocket(*a, **k)))
-
     # Patch create_connection to check whitelist
     socket.create_connection = _blocked_create_connection
 
@@ -138,20 +138,10 @@ def block_network():
     urllib.request.urlopen = _blocked_urlopen
     http.client.HTTPConnection.connect = _blocked_http_connect
 
-    # Patch SSLContext.wrap_socket to avoid direct SSL sockets
-    if hasattr(ssl, 'SSLContext'):
-        _ORIG['ssl.SSLContext.wrap_socket'] = ssl.SSLContext.wrap_socket
-
-        def _blocked_wrap(self, *a, **k):
-            raise NetworkBlockedError("SSL sockets blocked by python_blackbox")
-
-        ssl.SSLContext.wrap_socket = _blocked_wrap
-
     # Patch requests if present
     if requests is not None:
         _ORIG['requests.Session.request'] = requests.Session.request
         requests.Session.request = _blocked_requests_request
-
 
     _BLOCKED = True
 

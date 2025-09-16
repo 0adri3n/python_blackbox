@@ -86,21 +86,39 @@ python_blackbox.add_whitelist('api.mycompany.internal')
 Add a small test file to validate blocking behavior. Example:
 
 ```python
-# tests/test_block.py
-import os
-os.environ['PYTHON_BLACKBOX_NOAUTO'] = '1'
-import python_blackbox
+# tests/test.py
+import python_blackbox, requests
 
-def test_block_create_connection():
-    python_blackbox.block_network()
-    import socket
+python_blackbox.add_whitelist("httpbin.org")
+
+try:
+    r = requests.get("https://httpbin.org/get")  # should succeed
+    print("OK with whitelist:", r.status_code)
+except python_blackbox.NetworkBlockedError as e:
+    print("Blocked:", e)
+
+python_blackbox.remove_whitelist("httpbin.org")
+
+try:
+    r = requests.get("https://httpbin.org/get")  # should fail
+    print("OK:", r.status_code)
+except python_blackbox.NetworkBlockedError as e:
+    print("Blocked after whitelist removal:", e)
+
+with python_blackbox.allow_temporary():
     try:
-        socket.create_connection(('8.8.8.8', 53), timeout=1)
-        assert False, 'Network should be blocked'
-    except python_blackbox.NetworkBlockedError:
-        pass
-    finally:
-        python_blackbox.allow_network()
+        r = requests.get("https://httpbin.org/get")  # should succeed
+        print("OK in context with:", r.status_code)
+    except python_blackbox.NetworkBlockedError as e:
+        print("Blocked in context with:", e)
+
+python_blackbox.allow_network()
+
+try:
+    r = requests.get("https://httpbin.org/get")  # should fail
+    print("OK after network allowed:", r.status_code)
+except python_blackbox.NetworkBlockedError as e:
+    print("Blocked:", e)
 ```
 
 ## License
