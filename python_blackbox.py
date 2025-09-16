@@ -155,6 +155,8 @@ def block_network():
 
     _BLOCKED = True
 
+    _log("Network access blocked.")
+
 
 def allow_network():
     """Restore original networking functions."""
@@ -178,6 +180,8 @@ def allow_network():
 
     _ORIG.clear()
     _BLOCKED = False
+
+    _log("Network access allowed.")
 
 
 def is_blocked():

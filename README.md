@@ -86,15 +86,17 @@ python your_script.py
 import python_blackbox
 python_blackbox.set_debug(True)
 
-python_blackbox.add_whitelist("example.com")
+python_blackbox.allow_network()
+python_blackbox.add_whitelist("httpbin.org")
 python_blackbox.block_network()
 ```
 
 Logs will look like this:
 
 ```
+[python_blackbox DEBUG] Network access allowed.
 [python_blackbox DEBUG] Host/domain added to whitelist: httpbin.org
-[python_blackbox DEBUG] Blocking host httpbin.org
+[python_blackbox DEBUG] Network access blocked.
 ```
 
 
