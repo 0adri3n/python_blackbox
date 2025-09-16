@@ -1,5 +1,8 @@
 # python_blackbox
 
+<img width="682" height="214" alt="image" src="https://github.com/user-attachments/assets/650e7c85-36c8-429a-b232-4aab51a08015" />
+
+
 `python_blackbox` is a lightweight Python module that helps prevent accidental or malicious network exfiltration by disabling common Python networking primitives at runtime. It is intended as a developer tool to reduce risk when running untrusted or sensitive code inside the Python interpreter.
 
 > **Warning:** `python_blackbox` works at the Python level and is NOT a full substitute for OS-level network isolation. For robust guarantees use network namespaces, containers without a network, or firewall rules.
