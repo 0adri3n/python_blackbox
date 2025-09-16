@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python_blackbox"
+version = "0.1.0"
+description = "Python module to block network access at runtime"
+authors = [
+  { name="0adri3n", email="0adri3n@github.com" }
+]
+readme = "README.md"
+requires-python = ">=3.7"
