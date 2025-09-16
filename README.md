@@ -73,14 +73,14 @@ python_blackbox.add_whitelist('api.mycompany.internal')
 
 You can enable verbose debug logging to see more informations.
 
-### Enable via environment variable
+**Enable via environment variable**
 
 ```bash
 export PYTHON_BLACKBOX_DEBUG=1
 python your_script.py
 ```
 
-### Enable via code
+**Enable via code**
 
 ```python
 import python_blackbox
