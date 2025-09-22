@@ -169,10 +169,6 @@ except python_blackbox.NetworkBlockedError as e:
     print("Blocked:", e)
 ```
 
-## License
-
-Pick an appropriate license for your project (MIT recommended for small tools).
-
 ## Contributing
 
 Feel free to add more primitives to patch (e.g., `asyncio` transports) or improve domain/IP parsing for the whitelist. Pull requests welcome.
